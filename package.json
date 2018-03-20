@@ -1,0 +1,31 @@
+{
+  "name": "twitter-interface",
+  "version": "1.0.0",
+  "description": "twitter-interface express app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raphaelSeguin/twitter-interface.git"
+  },
+  "keywords": [
+    "twitter",
+    "express",
+    "interface",
+    "treehouse"
+  ],
+  "author": "raphael seguin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raphaelSeguin/twitter-interface/issues"
+  },
+  "homepage": "https://github.com/raphaelSeguin/twitter-interface#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "pug": "^2.0.1",
+    "twitter": "^1.7.1"
+  }
+}
