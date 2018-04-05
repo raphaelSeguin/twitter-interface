@@ -15,15 +15,15 @@ const app = express();
 const port = process.env.PORT || 5000;
 // new client
 const client = new Twit(config);
-//
+// user id from the access token
 const user_id = config.access_token.split('-')[0];
-//
+
+// getter functions
 const getUser = id => {
     // gets:
     // name
     // screen_name
     // profile pic
-
     return client.get('users/show', {user_id: id})
         .then( input => juice(input.data, ['name', 'screen_name', 'profile_image_url_https', 'profile_banner_url', 'friends_count']))
         .then( obj => Object.assign({}, {user: obj}))
@@ -82,6 +82,7 @@ const getMessages = () => {
         .catch( monitor('getMessages error') )
         ;
 };
+// decorates a message object with a profile_pic property
 const getSenderPic = message => {
     return client.get('users/show', {user_id: message.sender_id})
         .then( user => {
@@ -89,6 +90,7 @@ const getSenderPic = message => {
             return message;
         });
 }
+// this function uses the other getters
 const getInfos = () => {
     return Promise.all([getUser(user_id), getTweets(), getFriends(), getMessages()])
         .then( arr => Object.assign({}, ...arr) )
@@ -97,6 +99,7 @@ const getInfos = () => {
         ;
 };
 
+// express setup
 app.set('view engine', 'pug');
 app.set('views', './views');
 
@@ -123,7 +126,6 @@ app.post('/tweet', (req, res, next) => {
 })
 // catch errors
 app.use( (err, req, res, next) => {
-    console.log(err);
     res.render('error.pug');
 })
 // server listens
