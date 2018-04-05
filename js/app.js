@@ -59,10 +59,10 @@ const getMessages = () => {
     // -message body
     // -date the message was sent
     // -time the message was sent
-    return client.get('direct_messages/events/list', {count: 5})
+    // apparently I need to ask for 10 to get 5... bargaining API ?
+    return client.get('direct_messages/events/list', {count: 10})
         .then( obj => {
             return obj.data.events.map( obj => {
-                console.log(obj.message_create)
                 const response  = {};
                 const timeStamp = new Date(parseInt(obj.created_timestamp));
                 response.text   = obj.message_create.message_data.text;
@@ -70,18 +70,29 @@ const getMessages = () => {
                 response.time   = timeStamp.toTimeString();
                 response.timestamp = parseInt(obj.created_timestamp);
                 response.fromMe = obj.message_create.sender_id === user_id;
+                response.sender_id = obj.message_create.sender_id;
                 return response;
             });
         })
+        // Since it's responding unpredictible number of messages, I had to do this... and yes I know this is dirty
+        .then( array => {array.length = 5; return array} )
+        // decorate each message width sender's profile pic url
+        .then ( messageArray => Promise.all( messageArray.map(getSenderPic) ) )
         .then( array => Object.assign({}, {messages: array}) )
         .catch( monitor('getMessages error') )
         ;
 };
-//
+const getSenderPic = message => {
+    return client.get('users/show', {user_id: message.sender_id})
+        .then( user => {
+            message.profile_pic = user.data.profile_image_url_https;
+            return message;
+        });
+}
 const getInfos = () => {
     return Promise.all([getUser(user_id), getTweets(), getFriends(), getMessages()])
         .then( arr => Object.assign({}, ...arr) )
-        .then( monitor('\nINFOS:\n'))
+        //.then( monitor('\nINFOS:\n'))
         .catch( monitor("Sorry, I couldn't get your infos") )
         ;
 };

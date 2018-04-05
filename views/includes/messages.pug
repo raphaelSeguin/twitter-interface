@@ -1,14 +1,21 @@
 li
-    h3
-        | Conversation with
-        a Jill Spore
     ul.app--message--conversation
         
-    each message in messages
-        li.app--message--me
-            .app--avatar(style=`background-image: url(${user.profile_image_url_https})`)
-                img(src=user.profile_image_url_https)
-            p.app--message--text #{message.text}
-            p.app--message--timestamp #{elapsed(message.timestamp)} ago
+        each message in messages
+
+            if message.fromMe
+                li.app--message--me
+                    .app--avatar(style=`background-image: url(${message.profile_pic})`)
+                        img.app--avatar(src=message.profile_pic)
+                    p.app--message--text #{message.text}
+                    p.app--message--timestamp #{elapsed(message.timestamp)} ago
+            else 
+                li.app--message
+                    .app--avatar(style=`background-image: url(${message.profile_pic})`)
+                        img.app--avatar(src=message.profile_pic)
+                    p.app--message--text #{message.text}
+                    p.app--message--timestamp #{elapsed(message.timestamp)} ago
+            
+            
             
         
